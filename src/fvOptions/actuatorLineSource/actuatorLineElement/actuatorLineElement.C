@@ -338,28 +338,37 @@ void Foam::fv::actuatorLineElement::applyForceField
     volVectorField& forceField
 )
 {
-    // Calculate projection width
-    scalar epsilon = calcProjectionEpsilon();
-    scalar projectionRadius = (epsilon*Foam::sqrt(Foam::log(1.0/0.001)));
+    bool pointwiseForce = true 
 
-    // Apply force to the cells within the element's sphere of influence
-    scalar sphereRadius = chordLength_ + projectionRadius;
-    forAll(mesh_.cells(), cellI)
+    if (pointwiseForce)
     {
-        scalar dis = mag(mesh_.C()[cellI] - position_);
-        if (dis <= sphereRadius)
-        {
-            scalar factor = Foam::exp(-Foam::sqr(dis/epsilon))
-                          / (Foam::pow(epsilon, 3)
-                          * Foam::pow(Foam::constant::mathematical::pi, 1.5));
-            // forceField is opposite forceVector
-            forceField[cellI] += -forceVector_*factor;
-        }
+        label cellI = findCell(position_);
+        forceField[cellI] += -forceVector_;
     }
-
-    if (debug)
+    else
     {
-        Info<< "    sphereRadius: " << sphereRadius << endl;
+        scalar epsilon = calcProjectionEpsilon();
+        scalar projectionRadius = (epsilon*Foam::sqrt(Foam::log(1.0/0.001)));
+             
+        // Apply force to the cells within the element's sphere of influence
+        scalar sphereRadius = chordLength_ + projectionRadius;
+        forAll(mesh_.cells(), cellI)
+        {
+            scalar dis = mag(mesh_.C()[cellI] - position_);  
+            if (dis <= sphereRadius)
+            {
+                scalar factor = Foam::exp(-Foam::sqr(dis/epsilon))
+                              / (Foam::pow(epsilon, 3)
+                              * Foam::pow(Foam::constant::mathematical::pi, 1.5));
+                // forceField is opposite forceVector
+                forceField[cellI] += -forceVector_*factor;
+            }
+        }    
+            
+        if (debug)
+        {
+            Info<< "    sphereRadius: " << sphereRadius << endl;
+        }
     }
 }
 
