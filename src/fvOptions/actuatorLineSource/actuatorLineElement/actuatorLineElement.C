@@ -338,7 +338,7 @@ void Foam::fv::actuatorLineElement::applyForceField
     volVectorField& forceField
 )
 {
-    bool pointwiseForce = true 
+    bool pointwiseForce = true; 
 
     if (pointwiseForce)
     {
