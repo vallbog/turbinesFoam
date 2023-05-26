@@ -338,20 +338,34 @@ void Foam::fv::actuatorLineElement::applyForceField
     volVectorField& forceField
 )
 {
+    bool forceProjection2D = true;
+    scalar domainThickness = 0.2;
+    scalar subfactor; 
+
     // Calculate projection width
     scalar epsilon = calcProjectionEpsilon();
     scalar projectionRadius = (epsilon*Foam::sqrt(Foam::log(1.0/0.001)));
 
     // Apply force to the cells within the element's sphere of influence
     scalar sphereRadius = chordLength_ + projectionRadius;
+    
+    if (forceProjection2D)
+    {
+        subfactor = 1.0 / (Foam::sqr(epsilon)*Foam::constant::mathematical::pi
+                        * domainThickness);
+    }
+    else
+    {
+        subfactor = 1.0 / (Foam::pow(epsilon, 3)
+                        * Foam::pow(Foam::constant::mathematical::pi, 1.5));
+    }
+
     forAll(mesh_.cells(), cellI)
     {
         scalar dis = mag(mesh_.C()[cellI] - position_);
         if (dis <= sphereRadius)
         {
-            scalar factor = Foam::exp(-Foam::sqr(dis/epsilon))
-                          / (Foam::pow(epsilon, 3)
-                          * Foam::pow(Foam::constant::mathematical::pi, 1.5));
+            scalar factor = subfactor * Foam::exp(-Foam::sqr(dis/epsilon));
             // forceField is opposite forceVector
             forceField[cellI] += -forceVector_*factor;
         }
