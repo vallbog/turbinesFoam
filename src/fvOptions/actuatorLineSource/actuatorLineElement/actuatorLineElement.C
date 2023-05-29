@@ -343,7 +343,8 @@ void Foam::fv::actuatorLineElement::applyForceField
     if (pointwiseForce)
     {
         label cellI = findCell(position_);
-        forceField[cellI] += -forceVector_;
+        const scalarField& V = mesh_.V();
+        forceField[cellI] += -forceVector_/V[cellI];
     }
     else
     {
