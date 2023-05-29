@@ -201,7 +201,7 @@ void Foam::fv::actuatorLineElement::lookupCoefficients()
 Foam::scalar Foam::fv::actuatorLineElement::calcProjectionEpsilon()
 {
     bool forceProjection2D = true;
-    scalar domainThickness = 0.2;
+    scalar domainThickness = 0.4;
 
     // Lookup Gaussian coeffs from profileData dict if present
     dictionary GaussianCoeffs = profileData_.dict().subOrEmptyDict
@@ -349,7 +349,7 @@ void Foam::fv::actuatorLineElement::applyForceField
 )
 {
     bool forceProjection2D = true;
-    scalar domainThickness = 0.2;
+    scalar domainThickness = 0.4;
     scalar subfactor; 
 
     // Calculate projection width
