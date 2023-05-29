@@ -236,6 +236,8 @@ Foam::scalar Foam::fv::actuatorLineElement::calcProjectionEpsilon()
         {
             epsilon = epsilonThreshold;
         }
+
+        epsilon = 0.1525; // [m]
     }
 
     // Reduce epsilon over all processors
