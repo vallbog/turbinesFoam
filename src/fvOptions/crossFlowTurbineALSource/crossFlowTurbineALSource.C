@@ -227,6 +227,10 @@ void Foam::fv::crossFlowTurbineALSource::createBlades()
         );
         bladeSubDict.add("flowCurvature", fcDict);
 
+        // Lookup or create forceProjection subDict
+        dictionary fpDict = coeffs_.subOrEmptyDict("forceProjection");
+        bladeSubDict.add("forceProjection", fpDict);
+
         // Do not write force from individual actuator line unless specified
         bladeSubDict.lookupOrAddDefault("writeForceField", false);
 
@@ -377,6 +381,10 @@ void Foam::fv::crossFlowTurbineALSource::createStruts()
         strutSubDict.add("selectionMode", coeffs_.lookup("selectionMode"));
         strutSubDict.add("cellSet", coeffs_.lookup("cellSet"));
 
+        // Lookup or create forceProjection subDict
+        dictionary fpDict = coeffs_.subOrEmptyDict("forceProjection");
+        strutSubDict.add("forceProjection", fpDict);
+
         // Do not write force from individual actuator line unless specified
         strutSubDict.lookupOrAddDefault("writeForceField", false);
 
@@ -461,6 +469,10 @@ void Foam::fv::crossFlowTurbineALSource::createShaft()
     shaftSubDict.add("freeStreamVelocity", freeStreamVelocity_);
     shaftSubDict.add("selectionMode", coeffs_.lookup("selectionMode"));
     shaftSubDict.add("cellSet", coeffs_.lookup("cellSet"));
+
+    // Lookup or create forceProjection subDict
+    dictionary fpDict = coeffs_.subOrEmptyDict("forceProjection");
+    shaftSubDict.add("forceProjection", fpDict);
 
     // Do not write force from individual actuator line unless specified
     shaftSubDict.lookupOrAddDefault("writeForceField", false);

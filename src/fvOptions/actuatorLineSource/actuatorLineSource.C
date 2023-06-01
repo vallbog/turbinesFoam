@@ -328,6 +328,9 @@ void Foam::fv::actuatorLineSource::createElements()
         }
         dictionary fcDict = coeffs_.subOrEmptyDict("flowCurvature");
         dict.add("flowCurvature", fcDict);
+
+        dictionary fpDict = coeffs_.subOrEmptyDict("forceProjection");
+        dict.add("forceProjection", fcDict);
         bool writeElementPerf
         (
             coeffs_.lookupOrDefault("writeElementPerf", false)

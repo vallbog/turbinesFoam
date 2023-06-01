@@ -89,6 +89,27 @@ void Foam::fv::actuatorLineElement::read()
         );
     }
 
+    // Read force projection subdictionary
+    word forceProjectionInfo;
+    if (dict_.found("forceProjection"))
+    {
+        dictionary fpDict = dict_.subDict("forceProjection");
+        word defaultModel = "Gaussian3D";
+        forceProjectionModel_ = fpDict.lookupOrDefault
+        (
+            "forceProjectionModel",
+            defaultModel
+        );
+
+        forceProjectionInfo = forceProjectionModel_;
+        if (forceProjectionModel_ == "Gaussian2D")
+        {
+            fpDict.lookup("domainThickness") >> domainThickness_;
+            forceProjection +=
+            // << or sprintf ?
+        }
+    }
+
     // Read nu from object registry
     const dictionary& transportProperties = mesh_.lookupObject<IOdictionary>
     (
@@ -348,10 +369,6 @@ void Foam::fv::actuatorLineElement::applyForceField
     volVectorField& forceField
 )
 {
-    bool forceProjection2D = true;
-    scalar domainThickness = 0.2;
-    scalar subfactor; 
-
     // Calculate projection width
     scalar epsilon = calcProjectionEpsilon();
     scalar projectionRadius = (epsilon*Foam::sqrt(Foam::log(1.0/0.001)));
@@ -359,15 +376,17 @@ void Foam::fv::actuatorLineElement::applyForceField
     // Apply force to the cells within the element's sphere of influence
     scalar sphereRadius = chordLength_ + projectionRadius;
     
-    if (forceProjection2D)
-    {
-        subfactor = 1.0 / (Foam::sqr(epsilon)*Foam::constant::mathematical::pi
-                        * domainThickness);
-    }
-    else
+    scalar subfactor;
+
+    if (forceProjectionModel_ == "Gaussian3D")
     {
         subfactor = 1.0 / (Foam::pow(epsilon, 3)
                         * Foam::pow(Foam::constant::mathematical::pi, 1.5));
+    }
+    else if (forceProjectionModel_ == "Gaussian2D")
+    {
+        subfactor = 1.0 / (Foam::sqr(epsilon)*Foam::constant::mathematical::pi
+                        * domainThickness_);
     }
 
     forAll(mesh_.cells(), cellI)

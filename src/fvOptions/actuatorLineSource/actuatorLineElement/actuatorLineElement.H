@@ -171,6 +171,13 @@ protected:
         //- Flow curvature model name
         word flowCurvatureModelName_;
 
+        //- Force projection model name
+        word forceProjectionModel_;
+
+        //- Thickness of the domain in 2D simualtions, used in the
+        //  Gaussian2D force projection model
+        scalar domainThickness_;
+
         //- Leading edge velocity vector
         vector velocityLE_;
 
