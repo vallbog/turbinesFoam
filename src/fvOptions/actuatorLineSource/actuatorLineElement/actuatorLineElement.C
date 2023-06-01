@@ -87,6 +87,8 @@ void Foam::fv::actuatorLineElement::read()
             "flowCurvatureModel",
             defaultName
         );
+        scalar myTestVar = fcDict.lookupOrDefault("myTestVar", 2.0);
+        Info<< "ALE myTestVar: " << myTestVar << endl;
     }
 
     // Read nu from object registry
