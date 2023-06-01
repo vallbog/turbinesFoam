@@ -218,6 +218,9 @@ void Foam::fv::crossFlowTurbineALSource::createBlades()
 
         // Lookup or create flowCurvature subDict
         dictionary fcDict = coeffs_.subOrEmptyDict("flowCurvature");
+//        scalar myTestVar;
+//        fcDict.lookup("myTestVar") >> myTestVar;
+//        Info<< "myTestVar: " << myTestVar << endl;
         fcDict.lookupOrAddDefault("active", true);
         word defaultFCModel = "Goude";
         fcDict.lookupOrAddDefault

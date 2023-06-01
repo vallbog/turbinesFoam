@@ -327,6 +327,8 @@ void Foam::fv::actuatorLineSource::createElements()
             dict.add("dynamicStall", dsDict);
         }
         dictionary fcDict = coeffs_.subOrEmptyDict("flowCurvature");
+        scalar myTestVar = fcDict.lookupOrDefault("myTestVar", 2.0);
+        Info<< "ALsource myTestVar: " << myTestVar << endl;
         dict.add("flowCurvature", fcDict);
         bool writeElementPerf
         (

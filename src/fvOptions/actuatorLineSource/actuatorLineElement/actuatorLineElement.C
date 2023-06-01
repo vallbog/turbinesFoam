@@ -350,7 +350,7 @@ void Foam::fv::actuatorLineElement::applyForceField
 {
     bool forceProjection2D = true;
     scalar domainThickness = 0.2;
-    scalar subfactor; 
+    scalar subfactor;
 
     // Calculate projection width
     scalar epsilon = calcProjectionEpsilon();
