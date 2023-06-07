@@ -90,7 +90,6 @@ void Foam::fv::actuatorLineElement::read()
     }
 
     // Read force projection subdictionary
-    word forceProjectionInfo;
     if (dict_.found("forceProjection"))
     {
         dictionary fpDict = dict_.subDict("forceProjection");
@@ -100,13 +99,23 @@ void Foam::fv::actuatorLineElement::read()
             "forceProjectionModel",
             defaultModel
         );
+        if (debug)
+        {
+            Info<< endl << "Force projection model: " << forceProjectionModel_ << endl;
+        }
 
-        forceProjectionInfo = forceProjectionModel_;
         if (forceProjectionModel_ == "Gaussian2D")
         {
             fpDict.lookup("domainThickness") >> domainThickness_;
-            forceProjection +=
-            // << or sprintf ?
+            if (debug)
+            {
+                Info<< "    domainThickness: " << domainThickness_ << endl;
+            }
+        }
+
+        if (debug)
+        {
+            Info<< endl;
         }
     }
 
