@@ -230,9 +230,6 @@ void Foam::fv::actuatorLineElement::lookupCoefficients()
 
 Foam::scalar Foam::fv::actuatorLineElement::calcProjectionEpsilon()
 {
-    bool forceProjection2D = true;
-    scalar domainThickness = 0.2;
-
     // Lookup Gaussian coeffs from profileData dict if present
     dictionary GaussianCoeffs = profileData_.dict().subOrEmptyDict
     (
@@ -257,15 +254,16 @@ Foam::scalar Foam::fv::actuatorLineElement::calcProjectionEpsilon()
     label posCellI = findCell(position_);
     if (posCellI >= 0)
     {
-        if (forceProjection2D)
-        {
-            epsilonMesh = 2.0*Foam::sqrt(V[posCellI]/domainThickness);
-        }
-        else
+        if (forceProjectionModel_ == "Gaussian3D")
         {
             // Projection width based on local cell size (from Troldborg (2008))
             epsilonMesh = 2.0*Foam::cbrt(V[posCellI]);
         }
+        else if (forceProjectionModel_ == "Gaussian2D")
+        {
+            epsilonMesh = 2.0*Foam::sqrt(V[posCellI]/domainThickness_);
+        }
+
         epsilonMesh *= meshFactor; // Cell could have non-unity aspect ratio
 
         if (epsilonMesh > epsilonThreshold)
