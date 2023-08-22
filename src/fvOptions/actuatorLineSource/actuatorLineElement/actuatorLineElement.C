@@ -1098,6 +1098,7 @@ void Foam::fv::actuatorLineElement::addSup
     volVectorField& forceField
 )
 {
+    Info<< "Runnig addSup in ALE with rho" << endl;
     volVectorField forceFieldI
     (
         IOobject

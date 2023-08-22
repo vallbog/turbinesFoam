@@ -638,6 +638,12 @@ void Foam::fv::crossFlowTurbineALSource::addSup
     dragCoefficient_ = force_ & freeStreamDirection_
                      / (0.5*frontalArea_*magSqr(freeStreamVelocity_));
 
+
+    Info<< "frontalArea_: " << frontalArea_ << endl;
+    Info<< "magSqr(freeStreamVelocity_): " << magSqr(freeStreamVelocity_) << endl;
+    vector myVec(2,0,0);
+    Info<< "2 ** 2: " << magSqr(myVec) << endl;
+
     // Print performance to terminal
     printPerf();
 
@@ -718,6 +724,7 @@ void Foam::fv::crossFlowTurbineALSource::addSup
     dragCoefficient_ = force_ & freeStreamDirection_
                      / (0.5*rhoRef*frontalArea_*magSqr(freeStreamVelocity_));
 
+    Info<< "Running CFT with rho" << endl;
     // Print performance to terminal
     printPerf();
 
