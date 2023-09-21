@@ -178,6 +178,13 @@ protected:
         //  Gaussian2D force projection model
         scalar domainThickness_;
 
+        //- Name of method used to determine projection epsilon
+        word epsilonMethod_;
+
+        //- Fixed value of the projection epsilon, used in the
+        //  `Fixed` projection epsilon method
+        scalar epsilonFixed_;
+
         //- Leading edge velocity vector
         vector velocityLE_;
 

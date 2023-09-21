@@ -94,22 +94,41 @@ void Foam::fv::actuatorLineElement::read()
     {
         dictionary fpDict = dict_.subDict("forceProjection");
         word defaultModel = "Gaussian3D";
+        word defaultEpsilonMethod = "Standard";
         forceProjectionModel_ = fpDict.lookupOrDefault
         (
             "forceProjectionModel",
             defaultModel
         );
+        epsilonMethod_ = fpDict.lookupOrDefault
+        (
+            "epsilonMethod",
+            defaultEpsilonMethod
+        );
+
         if (debug)
         {
             Info<< endl << "Force projection model: " << forceProjectionModel_ << endl;
         }
-
         if (forceProjectionModel_ == "Gaussian2D")
         {
             fpDict.lookup("domainThickness") >> domainThickness_;
             if (debug)
             {
                 Info<< "    domainThickness: " << domainThickness_ << endl;
+            }
+        }
+
+        if (debug)
+        {
+            Info<< "Projection epsilon method: " << epsilonMethod_ << endl;
+        }
+        if (epsilonMethod_ == "Fixed")
+        {
+            fpDict.lookup("epsilonFixed") >> epsilonFixed_;
+            if (debug)
+            {
+                Info<< "    epsilonFixed: " << epsilonFixed_ << endl;
             }
         }
 
@@ -266,7 +285,11 @@ Foam::scalar Foam::fv::actuatorLineElement::calcProjectionEpsilon()
 
         epsilonMesh *= meshFactor; // Cell could have non-unity aspect ratio
 
-        if (epsilonMesh > epsilonThreshold)
+        if (epsilonMethod_ == "Fixed")
+        {
+            epsilon = epsilonFixed_;
+        }
+        else if (epsilonMesh > epsilonThreshold)
         {
             epsilon = epsilonMesh;
         }
@@ -292,7 +315,11 @@ Foam::scalar Foam::fv::actuatorLineElement::calcProjectionEpsilon()
     {
         reduce(epsilonMesh, minOp<scalar>());
         word epsilonMethod;
-        if (epsilon == epsilonLift)
+        if (epsilonMethod_ == "Fixed")
+        {
+            epsilonMethod = "fixed";
+        }
+        else if (epsilon == epsilonLift)
         {
             epsilonMethod = "lift-based";
         }
